@@ -7,7 +7,7 @@ export class MySQLAdapter implements IDBAdapter {
   findOne(where: object): Promise<object> {
     throw new Error("Method not implemented.");
   }
-  insert(data: object): Promise<object> {
+  insert(data: object): void {
     throw new Error("Method not implemented.");
   }
   update(data: object, where?: object | undefined): Promise<object> {

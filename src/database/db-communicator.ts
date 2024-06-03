@@ -5,7 +5,7 @@ import { IndexedDBAdapter } from "./adapters/indexed-db.adapter";
 
 export class DBCommunicator implements IDBAdapter {
   db: number = 1 | 2 | 3;
-  constructor(db) {
+  constructor(db: number) {
     this.db = db;
   }
 
@@ -21,14 +21,26 @@ export class DBCommunicator implements IDBAdapter {
         break;
       case 3:
         const indexeddb = new IndexedDBAdapter();
-        indexeddb.findAll({});
+        indexeddb.insert({});
     }
   }
   findOne(where: object): Promise<object> {
     throw new Error("Method not implemented.");
   }
-  insert(data: object): Promise<object> {
-    throw new Error("Method not implemented.");
+  insert(data: object): void {
+    switch (this.db) {
+      case 1:
+        const mysql = new MySQLAdapter();
+        mysql.findAll({});
+        break;
+      case 2:
+        const postgresql = new PostgreSQLAdapter();
+        postgresql.findAll({});
+        break;
+      case 3:
+        const indexeddb = new IndexedDBAdapter();
+        indexeddb.insert(data);
+    }
   }
   update(data: object, where?: object | undefined): Promise<object> {
     throw new Error("Method not implemented.");

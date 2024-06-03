@@ -1,32 +1,27 @@
 import { IDBAdapter } from "../idb";
 
 export class IndexedDBAdapter implements IDBAdapter {
-  findAll(where: object): void {
-    let db: IDBDatabase | null = null;
-    function createDatabase(): void {
+  private db: IDBDatabase | null = null;
+
+  private async openDatabase(): Promise<void> {
+    const databasePromise = new Promise<IDBDatabase>((resolve, reject) => {
       const request: IDBOpenDBRequest = window.indexedDB.open("MyDatabase", 1);
-
-      request.onerror = (e: Event) => {
-        // console.error(`IndexedDB error: ${request.errorCode}`);
+      request.onerror = (e) => {
+        reject(e);
       };
-
       request.onsuccess = (e) => {
-        console.info("Successful database connection");
-        db = request.result;
-        console.log(db);
+        this.db = request.result;
+        resolve(this.db);
       };
 
-      request.onupgradeneeded = (e) => {
-        console.info("Database created");
-        const db = request.result;
-      };
-    }
-    createDatabase();
+    });
+    this.db = await databasePromise;
   }
+  async insert(data: object): Promise<void> {
+    await this.openDatabase();
+  }
+  findAll(where: object): void {}
   findOne(where: object): Promise<object> {
-    throw new Error("Method not implemented.");
-  }
-  insert(data: object): Promise<object> {
     throw new Error("Method not implemented.");
   }
   update(data: object, where?: object | undefined): Promise<object> {
